@@ -1,4 +1,6 @@
-package DynamicProgramming;
+package ArrayHopper;
+
+import java.util.ArrayList;
 
 /**
  * Created by jmmodi on 12/14/2015.
@@ -7,8 +9,8 @@ public class ArrayHopper {
 
     public static void main(String[] args) {
 
-        int array[] = {5,6,8,7,4,1,3,9,6,8,4,2,1,5};
-    
+        int array[] = {8,0,0,0,0,0,0,0,0};
+
         int minHopArray[] = new int[array.length];
 
         for (int i = 0; i < minHopArray.length; i++) {
@@ -20,13 +22,25 @@ public class ArrayHopper {
         }
         calculateMinHop(array, minHopArray);
 
-        System.out.println(printMinHopString(minHopArray, 0, array.length - 1)+"out");
+        if (minHopArray[0] == Integer.MAX_VALUE) {
+            System.out.println("failure");
+        } else {
+
+            ArrayList<Integer> minIndicesList = findMinIndicesList(minHopArray, 0, array.length - 1);
+
+            for (int i = minIndicesList.size() - 1; i >= 0; i--) {
+                System.out.print(minIndicesList.get(i) + " ");
+            }
+            System.out.print("out");
+
+        }
     }
 
     private static void printArray(int[] minHopArray) {
         for (int aMinHopArray : minHopArray) {
             System.out.print(aMinHopArray + " ");
         }
+        System.out.println("");
     }
 
     private static void calculateMinHop(int[] array, int[] minHopArray) {
@@ -38,6 +52,8 @@ public class ArrayHopper {
                 minHopArray[i] = Integer.MAX_VALUE;
             } else if (i + valueAtIndex >= array.length) {
                 minHopArray[i] = 1;
+            }else if(valueAtIndex < 0) {
+                minHopArray[i] = Integer.MAX_VALUE;
             } else {
                 int integerMax = minHopArray[i + valueAtIndex];
                 if (integerMax == Integer.MAX_VALUE) {
@@ -49,18 +65,18 @@ public class ArrayHopper {
         }
     }
 
-    private static String printMinHopString(int[] minHopArray,int start,int end) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private static ArrayList<Integer> findMinIndicesList(int[] minHopArray, int start, int end) {
+        ArrayList<Integer> reverseList = new ArrayList<>();
 
         int min;
 
-        while (start<=end) {
+        while (start <= end) {
             min = findMinIndex(minHopArray, start, end);
-            stringBuilder.append(String.valueOf(min));
-            end = min-1;
+            reverseList.add(min);
+            end = min - 1;
         }
 
-        return stringBuilder.reverse().toString();
+        return reverseList;
     }
 
     private static int findMinIndex(int[] minHopArray, int start, int end) {
