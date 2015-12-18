@@ -1,5 +1,8 @@
 package ArrayHopper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -9,30 +12,59 @@ public class ArrayHopper {
 
     public static void main(String[] args) {
 
-        int array[] = {8,0,0,0,0,0,0,0,0};
+        ArrayList<Integer> numbers = readFromConsole();
 
-        int minHopArray[] = new int[array.length];
+        if (numbers.size() > 0) {
+            int[] minHopArray = new int[numbers.size()];
 
-        for (int i = 0; i < minHopArray.length; i++) {
+            initializeMinHopArray(numbers, minHopArray);
+
+            calculateMinHop(numbers, minHopArray);
+
+            printSolution(numbers, minHopArray);
+        } else {
+            System.out.println("failure");
+        }
+    }
+
+    private static ArrayList<Integer> readFromConsole() {
+        ArrayList<Integer> numbers = new ArrayList<>();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String line;
+
+        try {
+            while ((line = br.readLine()) != null && line.length() != 0) {
+                numbers.add(Integer.parseInt(line));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return numbers;
+    }
+
+    private static void initializeMinHopArray(ArrayList<Integer> numbers, int[] minHopArray) {
+        for (int i = 0; i < numbers.size(); i++) {
             minHopArray[i] = Integer.MAX_VALUE;
         }
 
-        if (array[array.length - 1] != 0) {
-            minHopArray[array.length - 1] = 1;
+        if (numbers.get(numbers.size() - 1) != 0) {
+            minHopArray[numbers.size() - 1] = 1;
         }
-        calculateMinHop(array, minHopArray);
+    }
 
+    private static void printSolution(ArrayList<Integer> numbers, int[] minHopArray) {
         if (minHopArray[0] == Integer.MAX_VALUE) {
             System.out.println("failure");
         } else {
 
-            ArrayList<Integer> minIndicesList = findMinIndicesList(minHopArray, 0, array.length - 1);
+            ArrayList<Integer> minIndicesList = findMinIndicesList(minHopArray, 0, numbers.size() - 1);
 
             for (int i = minIndicesList.size() - 1; i >= 0; i--) {
                 System.out.print(minIndicesList.get(i) + " ");
             }
             System.out.print("out");
-
         }
     }
 
@@ -43,16 +75,16 @@ public class ArrayHopper {
         System.out.println("");
     }
 
-    private static void calculateMinHop(int[] array, int[] minHopArray) {
+    private static void calculateMinHop(ArrayList<Integer> numbers, int[] minHopArray) {
 
-        for (int i = array.length - 2; i >= 0; i--) {
-            int valueAtIndex = array[i];
+        for (int i = numbers.size() - 2; i >= 0; i--) {
+            int valueAtIndex = numbers.get(i);
 
             if (valueAtIndex == 0) {
                 minHopArray[i] = Integer.MAX_VALUE;
-            } else if (i + valueAtIndex >= array.length) {
+            } else if (i + valueAtIndex >= numbers.size()) {
                 minHopArray[i] = 1;
-            }else if(valueAtIndex < 0) {
+            } else if (valueAtIndex < 0) {
                 minHopArray[i] = Integer.MAX_VALUE;
             } else {
                 int integerMax = minHopArray[i + valueAtIndex];
